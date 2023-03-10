@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_ENV: ${APP_ENV}
+    ports:
+      - "80:80"
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - mysql
+      - mongo
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: myapp
+      DB_USER: myuser
+      DB_PASS: mypass
+      MONGO_HOST: mongo
+      MONGO_PORT: 27017
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: myrootpassword
+      MYSQL_DATABASE: myapp
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypass
+    volumes:
+      - ./mysql:/var/lib/mysql
+  mongo:
+    image: mongo:latest
+    volumes:
+      - ./mongo:/data/db
+
